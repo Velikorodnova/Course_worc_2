@@ -1,26 +1,26 @@
 package task;
 
-import frequency.IFrequency;
+import frequency.Frequency;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Task {
+public abstract class Task implements Frequency {
 
     private String header;
     private String info;
     private int id;
     private LocalDateTime dateTime;
     private Type type;
-    private IFrequency frequency;
 
-    public Task(String header, String info, LocalDateTime dateTime, Type type, IFrequency frequency) {
+    public Task(String header, String info, LocalDateTime dateTime, Type type) {
         this.header = header;
         this.info = info;
         this.id = IdGenerator.generateId();
         this.dateTime = dateTime;
         this.type = type;
-        this.frequency = frequency;
     }
+
     public String getHeader() {
         return header;
     }
@@ -32,7 +32,11 @@ public class Task {
     public int getId() {
         return id;
     }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
+
+    @Override
+    public abstract boolean nextTime(LocalDate date);
 }

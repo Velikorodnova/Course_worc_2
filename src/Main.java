@@ -1,6 +1,4 @@
-import frequency.*;
-import task.TaskService;
-import task.Type;
+import task.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,9 +54,9 @@ public class Main {
             String createDateTime = scanner.next();
             LocalDateTime taskDateTime = LocalDateTime.parse(createDateTime, TASK_DATE_TIME_FORMATTER);
             Type taskType = createTaskType(scanner);
-            IFrequency taskFrequency = createFrequency(scanner);
-            taskService.addTask(taskHeader, taskInfo, taskDateTime, taskType, taskFrequency);
-            System.out.print("Задача успешно создана!");
+            Task task = createTask(scanner, taskHeader, taskInfo, taskDateTime, taskType);
+            taskService.addTask(task);
+            System.out.print("Задача успешно создана!\n");
         } catch (Exception e) {
             System.out.print("Некорректно введены данные!");
         }
@@ -66,7 +64,7 @@ public class Main {
 
     private static void removeTask(Scanner scanner, TaskService taskService) {
         try {
-            printAllTasks(scanner,taskService);
+            printAllTasks(scanner, taskService);
             System.out.println("Введите id задачи которую хотите удалить: ");
             Integer taskId = scanner.nextInt();
             taskService.deleteTask(taskId);
@@ -88,7 +86,7 @@ public class Main {
     }
 
     private static Type createTaskType(Scanner scanner) {
-        System.out.println("Выберите тип задачи\n 1. Личная\n 2.Рабочая");
+        System.out.println("Выберите тип задачи\n 1.Личная\n 2.Рабочая");
         while (true) {
             System.out.println("Введите тип задачи: ");
             String typeSelection = scanner.next();
@@ -104,23 +102,23 @@ public class Main {
         }
     }
 
-    private static IFrequency createFrequency(Scanner scanner) {
-        System.out.println("Выберите тип повтора\n 1. Однократная\n 2.Ежедневная\n " +
+    private static Task createTask(Scanner scanner, String header, String info, LocalDateTime dateTime, Type type) {
+        System.out.println("Выберите тип повтора\n 1.Однократная\n 2.Ежедневная\n " +
                 "3.Еженедельная\n 4.Ежемесячная\n 5.Ежегодная");
         while (true) {
             System.out.println("Введите тип повтора: ");
             String frequencySelection = scanner.next();
             switch (frequencySelection) {
                 case "1":
-                    return new OneTimeFrequency();
+                    return new OneTimeTask(header, info, dateTime, type);
                 case "2":
-                    return new EveryDayFrequency();
+                    return new DailyTask(header, info, dateTime, type);
                 case "3":
-                    return new EveryWeekFrequency();
+                    return new WeeklyTask(header, info, dateTime, type);
                 case "4":
-                    return new EveryMonthFrequency();
+                    return new MonthlyTask(header, info, dateTime, type);
                 case "5":
-                    return new EveryYearFrequency();
+                    return new YearlyTask(header, info, dateTime, type);
                 default:
                     System.out.println("Введен неправильный тип повтора!");
                     break;
